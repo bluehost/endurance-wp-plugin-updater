@@ -1,5 +1,5 @@
 {
-  "name": "bluehost/endurance-github-updater",
+  "name": "bluehost/endurance-wp-plugin-updater",
   "license": "GPL-2.0+",
   "authors": [
     {
@@ -12,7 +12,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Endurance_Github_Updater\\": ""
+      "Endurance_WP_Plugin_Updater\\": ""
     }
   }
 }

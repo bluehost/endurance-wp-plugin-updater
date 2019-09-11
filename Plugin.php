@@ -1,6 +1,6 @@
 <?php
 
-namespace Endurance_Github_Updater;
+namespace Endurance_WP_Plugin_Updater;
 
 /**
  * Class Plugin

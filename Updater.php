@@ -1,13 +1,13 @@
 <?php
 
-namespace Endurance_Github_Updater;
+namespace Endurance_WP_Plugin_Updater;
 
 use Pimple\Container;
 
 /**
  * Class Updater
  *
- * @package Endurance_Github_Updater
+ * @package Endurance_WP_Plugin_Updater
  */
 class Updater {
 
