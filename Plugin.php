@@ -109,7 +109,7 @@ class Plugin {
 	 */
 	public function __call( $name, $args ) {
 		$value = '';
-		if ( isset( $this::HEADERS[ $name ] ) ) {
+		if ( array_key_exists( $name, $this::HEADERS ) ) {
 			$value = $this->get_file_header( $this::HEADERS[ $name ] );
 		}
 
