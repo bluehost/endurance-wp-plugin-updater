@@ -30,7 +30,7 @@ class Updater {
 							'packageName'    => $c['package'],
 							'pluginBasename' => $c['plugin_basename']
 						], null, '&' );
-					$response = wp_remote_get( 'https://no7g4645pd.execute-api.us-west-2.amazonaws.com/default/bluehost-github-release-api' . $query_string );
+					$response = wp_remote_get( 'https://bluehost-wp-release.com/v1/' . $query_string );
 					if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
 						$body = wp_remote_retrieve_body( $response );
 						if ( $body ) {
