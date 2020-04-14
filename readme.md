@@ -22,7 +22,7 @@ Invoke the updater as follows:
 
 ```PHP
 use Endurance_WP_Plugin_Updater\Updater;
-new Updater( 'bluehost', 'bluehost-wordpress-plugin', 'bluehost-wordpress-plugin/bluehost.php' );
+new Updater( 'bluehost', 'bluehost-wordpress-plugin', 'bluehost-wordpress-plugin/bluehost-wordpress-plugin.php' );
 ```
 
 The first parameter is the GitHub user name. The second parameter is the GitHub repo slug. The final parameter is the WordPress plugin basename.
