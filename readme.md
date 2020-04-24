@@ -8,7 +8,7 @@ Ensure that this block is added to your `composer.json` file:
   "repositories": [
       {
         "type": "composer",
-        "url": "https://satis.wpteamhub.com"
+        "url": "https://bluehost.github.io/satis/"
       }
   ]
 }
