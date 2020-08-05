@@ -54,6 +54,8 @@ class Updater {
 
 			if ( isset( $release->new_version ) && version_compare( $release->new_version, $plugin->version(), '>' ) ) {
 				$transient->response[ $plugin->basename() ] = $release;
+			} else {
+				$transient->no_update[ $plugin->basename() ] = $container['plugin'];
 			}
 
 			return $transient;
