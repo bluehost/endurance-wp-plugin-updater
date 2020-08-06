@@ -1,18 +1,36 @@
 {
   "name": "bluehost/endurance-wp-plugin-updater",
-  "license": "GPL-2.0+",
+  "description": "A Composer package handling updates for WordPress plugins managed by Endurance.",
+  "license": "GPL-2.0-or-later",
   "authors": [
     {
       "name": "Micah Wood",
       "email": "micah@wpscholar.com"
     }
   ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://satis.wpteamhub.com"
+    }
+  ],
   "require": {
     "pimple/pimple": "^3.2"
+  },
+  "require-dev": {
+    "bluehost/wp-php-standards": "^1.1"
   },
   "autoload": {
     "psr-4": {
       "Endurance_WP_Plugin_Updater\\": ""
     }
+  },
+  "scripts": {
+    "lint": [
+      "vendor/bin/phpcs . --standard=Bluehost"
+    ],
+    "clean": [
+      "vendor/bin/phpcbf . --standard=Bluehost"
+    ]
   }
 }
