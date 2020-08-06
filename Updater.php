@@ -82,7 +82,7 @@ class Updater {
 						'icons'         => array(),
 						'banners'       => array(),
 						'banners_rtl'   => array(),
-						'tested'        => $plugin->requires_wp_version(),
+						'tested'        => '',
 						'requires_php'  => $plugin->requires_php_version(),
 						'compatibility' => new \stdClass(),
 					);
