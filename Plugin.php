@@ -27,7 +27,7 @@ class Plugin {
 	 *
 	 * @var array
 	 */
-	const HEADERS = [
+	const HEADERS = array(
 		'author'               => 'Author',
 		'author_uri'           => 'AuthorURI',
 		'description'          => 'Description',
@@ -40,10 +40,20 @@ class Plugin {
 		'text_domain'          => 'TextDomain',
 		'uri'                  => 'PluginURI',
 		'version'              => 'Version',
-	];
+	);
 
+	/**
+	 * The absolute path to the plugin file.
+	 *
+	 * @var string
+	 */
 	protected $file;
 
+	/**
+	 * Plugin constructor.
+	 *
+	 * @param string $file The absolute path to the plugin file.
+	 */
 	public function __construct( $file = __FILE__ ) {
 		$this->file = $file;
 	}
@@ -69,7 +79,7 @@ class Plugin {
 	/**
 	 * Get a specific plugin file header.
 	 *
-	 * @param string $name
+	 * @param string $name The plugin file header name.
 	 *
 	 * @return string
 	 */
@@ -86,7 +96,7 @@ class Plugin {
 	 */
 	protected function get_file_headers() {
 
-		static $file_headers = [];
+		static $file_headers = array();
 
 		if ( empty( $file_headers ) ) {
 
@@ -103,7 +113,8 @@ class Plugin {
 	/**
 	 * Magic method for fetching data from plugin file headers.
 	 *
-	 * @param string $name
+	 * @param string $name The method name.
+	 * @param array  $args The method parameters.
 	 *
 	 * @return string
 	 */

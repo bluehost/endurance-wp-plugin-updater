@@ -1,5 +1,7 @@
 # Endurance WordPress Plugin Updater
 
+A Composer package handling updates for WordPress plugins managed by Endurance.
+
 # Installation
 Ensure that this block is added to your `composer.json` file:
 
