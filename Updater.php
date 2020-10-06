@@ -78,7 +78,7 @@ class Updater {
 						'plugin'        => $plugin->basename(),
 						'new_version'   => $plugin->version(),
 						'url'           => $plugin->uri(),
-						'package'       => '',
+						'package'       => $plugin->uri(),
 						'icons'         => array(),
 						'banners'       => array(),
 						'banners_rtl'   => array(),
