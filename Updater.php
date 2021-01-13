@@ -22,10 +22,10 @@ class Updater {
 
 		$container = new Container(
 			array(
-				'vendor'           => $vendor, // abstract of GitHub org
-				'package'          => $package, // abstract of GitHub repo name
-				'plugin_basename'  => $plugin_basename, // bluehost-wordpress-plugin/bluehost-wordpress-plugin.php
-				'plugin'           => function ( Container $c ) {
+				'vendor'            => $vendor, // abstract of GitHub org
+				'package'           => $package, // abstract of GitHub repo name
+				'plugin_basename'   => $plugin_basename, // bluehost-wordpress-plugin/bluehost-wordpress-plugin.php
+				'plugin'            => function ( Container $c ) {
 					$path = WP_PLUGIN_DIR . '/' . $c['plugin_basename'];
 					if ( is_readable( $path ) ) {
 						return new Plugin( $path );
@@ -33,7 +33,7 @@ class Updater {
 
 					return new \stdClass();
 				},
-				'cache_key'		   => function ( Container $c ) {
+				'cache_key'         => function ( Container $c ) {
 					return str_replace( '-', '_', $c['plugin']->slug() ) . '_github_api_latest_release';
 				},
 				'query_release_api' => function( Container $c ) {
@@ -46,8 +46,8 @@ class Updater {
 
 					return wp_remote_get( 'https://bluehost-wp-release.com/v1/' . $query_string );
 				},
-				'get_release_data' => function ( Container $c ) {
-					$payload   = get_transient( $c['cache_key'] );
+				'get_release_data'  => function ( Container $c ) {
+					$payload = get_transient( $c['cache_key'] );
 					if ( ! $payload ) {
 						$payload = new \stdClass();
 						$response = $c['query_release_api'];
@@ -78,16 +78,15 @@ class Updater {
 				 *
 				 * @var Plugin $plugin
 				 */
-				$plugin  = $container['plugin'];
+				$plugin = $container['plugin'];
 				/**
 				 * Decoded JSON from Bluehost Release API
 				 */
 				$release = $container['get_release_data'];
 
-				if ( 
-					! $plugin instanceof Plugin 
-					|| ! property_exists( $release, 'new_version' ) 
-					|| ( ! property_exists( $transient, 'response' ) || ! property_exists( $transient, 'no_update') )
+				if ( ! $plugin instanceof Plugin
+					|| ! property_exists( $release, 'new_version' )
+					|| ( ! property_exists( $transient, 'response' ) || ! property_exists( $transient, 'no_update' ) )
 				) {
 					return $transient;
 				}
