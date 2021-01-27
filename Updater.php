@@ -22,31 +22,43 @@ class Updater {
 
 		$container = new Container(
 			array(
-				'vendor'           => $vendor,
-				'package'          => $package,
-				'plugin_basename'  => $plugin_basename,
-				'plugin'           => function () use ( $plugin_basename ) {
-					return new Plugin( WP_PLUGIN_DIR . '/' . $plugin_basename );
+				'vendor'            => $vendor, // abstract of GitHub org
+				'package'           => $package, // abstract of GitHub repo name
+				'plugin_basename'   => $plugin_basename, // bluehost-wordpress-plugin/bluehost-wordpress-plugin.php
+				'plugin'            => function ( Container $c ) {
+					$path = WP_PLUGIN_DIR . '/' . $c['plugin_basename'];
+					if ( is_readable( $path ) ) {
+						return new Plugin( $path );
+					}
+
+					return new \stdClass();
 				},
-				'get_release_data' => function ( Container $c ) {
-					$cache_key = str_replace( '-', '_', $c['plugin']->slug() ) . '_github_api_latest_release';
-					$payload   = get_transient( $cache_key );
+				'cache_key'         => function ( Container $c ) {
+					return str_replace( '-', '_', $c['plugin']->slug() ) . '_github_api_latest_release';
+				},
+				'query_release_api' => function( Container $c ) {
+					$package_info = array(
+						'vendorName'     => $c['vendor'],
+						'packageName'    => $c['package'],
+						'pluginBasename' => $c['plugin_basename'],
+					);
+					$query_string = '?' . http_build_query( $package_info, null, '&' );
+
+					return wp_remote_get( 'https://bluehost-wp-release.com/v1/' . $query_string );
+				},
+				'get_release_data'  => function ( Container $c ) {
+					$payload = get_transient( $c['cache_key'] );
 					if ( ! $payload ) {
 						$payload = new \stdClass();
-						$package_info = array(
-							'vendorName'     => $c['vendor'],
-							'packageName'    => $c['package'],
-							'pluginBasename' => $c['plugin_basename'],
-						);
-						$query_string = '?' . http_build_query( $package_info, null, '&' );
-						$response     = wp_remote_get( 'https://bluehost-wp-release.com/v1/' . $query_string );
+						$response = $c['query_release_api'];
+
 						if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
 							$body = wp_remote_retrieve_body( $response );
 							if ( $body ) {
 								$data = json_decode( $body );
-								if ( $data ) {
+								if ( $data && property_exists( $data, 'package' ) && false !== stripos( $data->package, '.zip' ) ) {
 									$payload = $data;
-									set_transient( $cache_key, $payload, HOUR_IN_SECONDS * 6 );
+									set_transient( $c['cache_key'], $payload, HOUR_IN_SECONDS * 6 );
 								}
 							}
 						}
@@ -66,10 +78,20 @@ class Updater {
 				 *
 				 * @var Plugin $plugin
 				 */
-				$plugin  = $container['plugin'];
+				$plugin = $container['plugin'];
+				/**
+				 * Decoded JSON from Bluehost Release API
+				 */
 				$release = $container['get_release_data'];
 
-				if ( isset( $release->new_version ) && version_compare( $release->new_version, $plugin->version(), '>' ) ) {
+				if ( ! $plugin instanceof Plugin
+					|| ! property_exists( $release, 'new_version' )
+					|| ( ! property_exists( $transient, 'response' ) || ! property_exists( $transient, 'no_update' ) )
+				) {
+					return $transient;
+				}
+
+				if ( version_compare( $release->new_version, $plugin->version(), '>' ) ) {
 					$transient->response[ $plugin->basename() ] = $release;
 				} else {
 					$transient->no_update[ $plugin->basename() ] = (object) array(
