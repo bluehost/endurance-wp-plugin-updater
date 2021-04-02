@@ -36,7 +36,7 @@ class Updater {
 				'cache_key'         => function ( Container $c ) {
 					return str_replace( '-', '_', $c['plugin']->slug() ) . '_github_api_latest_release';
 				},
-				'query_release_api' => function( Container $c ) {
+				'query_release_api' => function ( Container $c ) {
 					$package_info = array(
 						'vendorName'     => $c['vendor'],
 						'packageName'    => $c['package'],
@@ -49,7 +49,7 @@ class Updater {
 				'get_release_data'  => function ( Container $c ) {
 					$payload = get_transient( $c['cache_key'] );
 					if ( ! $payload ) {
-						$payload = new \stdClass();
+						$payload  = new \stdClass();
 						$response = $c['query_release_api'];
 
 						if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
@@ -84,9 +84,15 @@ class Updater {
 				 */
 				$release = $container['get_release_data'];
 
-				if ( ! $plugin instanceof Plugin
-					|| ! property_exists( $release, 'new_version' )
-					|| ( ! property_exists( $transient, 'response' ) || ! property_exists( $transient, 'no_update' ) )
+				if (
+					! $plugin instanceof Plugin ||
+					! is_object( $release ) ||
+					! is_object( $transient ) ||
+					! property_exists( $release, 'new_version' ) ||
+					(
+						! property_exists( $transient, 'response' ) ||
+						! property_exists( $transient, 'no_update' )
+					)
 				) {
 					return $transient;
 				}
