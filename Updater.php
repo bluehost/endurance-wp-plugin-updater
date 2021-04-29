@@ -27,16 +27,13 @@ class Updater {
 				'plugin_basename'   => $plugin_basename, // bluehost-wordpress-plugin/bluehost-wordpress-plugin.php
 				'plugin'            => function ( Container $c ) {
 					$path = WP_PLUGIN_DIR . '/' . $c['plugin_basename'];
-					if ( is_readable( $path ) ) {
-						return new Plugin( $path );
-					}
 
-					return new \stdClass();
+					return new Plugin( $path );
 				},
 				'cache_key'         => function ( Container $c ) {
 					return str_replace( '-', '_', $c['plugin']->slug() ) . '_github_api_latest_release';
 				},
-				'query_release_api' => function( Container $c ) {
+				'query_release_api' => function ( Container $c ) {
 					$package_info = array(
 						'vendorName'     => $c['vendor'],
 						'packageName'    => $c['package'],
@@ -49,7 +46,7 @@ class Updater {
 				'get_release_data'  => function ( Container $c ) {
 					$payload = get_transient( $c['cache_key'] );
 					if ( ! $payload ) {
-						$payload = new \stdClass();
+						$payload  = new \stdClass();
 						$response = $c['query_release_api'];
 
 						if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
@@ -73,25 +70,23 @@ class Updater {
 			'site_transient_update_plugins',
 			function ( $transient ) use ( $container ) {
 
+				if ( empty( $transient ) || ! is_object( $transient ) ) {
+					return $transient;
+				}
+
 				/**
 				 * The plugin instance.
 				 *
 				 * @var Plugin $plugin
 				 */
 				$plugin = $container['plugin'];
+
 				/**
 				 * Decoded JSON from Bluehost Release API
 				 */
 				$release = $container['get_release_data'];
 
-				if ( ! $plugin instanceof Plugin
-					|| ! property_exists( $release, 'new_version' )
-					|| ( ! property_exists( $transient, 'response' ) || ! property_exists( $transient, 'no_update' ) )
-				) {
-					return $transient;
-				}
-
-				if ( version_compare( $release->new_version, $plugin->version(), '>' ) ) {
+				if ( isset( $release->new_version ) && version_compare( $release->new_version, $plugin->version(), '>' ) ) {
 					$transient->response[ $plugin->basename() ] = $release;
 				} else {
 					$transient->no_update[ $plugin->basename() ] = (object) array(
