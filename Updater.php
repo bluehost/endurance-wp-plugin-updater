@@ -27,11 +27,8 @@ class Updater {
 				'plugin_basename'   => $plugin_basename, // bluehost-wordpress-plugin/bluehost-wordpress-plugin.php
 				'plugin'            => function ( Container $c ) {
 					$path = WP_PLUGIN_DIR . '/' . $c['plugin_basename'];
-					if ( is_readable( $path ) ) {
-						return new Plugin( $path );
-					}
 
-					return new \stdClass();
+					return new Plugin( $path );
 				},
 				'cache_key'         => function ( Container $c ) {
 					return str_replace( '-', '_', $c['plugin']->slug() ) . '_github_api_latest_release';
