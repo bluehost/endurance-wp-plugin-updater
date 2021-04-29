@@ -80,25 +80,13 @@ class Updater {
 				 * @var Plugin $plugin
 				 */
 				$plugin = $container['plugin'];
+
 				/**
 				 * Decoded JSON from Bluehost Release API
 				 */
 				$release = $container['get_release_data'];
 
-				if (
-					! $plugin instanceof Plugin ||
-					! is_object( $release ) ||
-					! is_object( $transient ) ||
-					! property_exists( $release, 'new_version' ) ||
-					(
-						! property_exists( $transient, 'response' ) ||
-						! property_exists( $transient, 'no_update' )
-					)
-				) {
-					return $transient;
-				}
-
-				if ( version_compare( $release->new_version, $plugin->version(), '>' ) ) {
+				if ( isset( $release->new_version ) || version_compare( $release->new_version, $plugin->version(), '>' ) ) {
 					$transient->response[ $plugin->basename() ] = $release;
 				} else {
 					$transient->no_update[ $plugin->basename() ] = (object) array(
