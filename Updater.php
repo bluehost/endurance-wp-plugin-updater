@@ -70,6 +70,10 @@ class Updater {
 			'site_transient_update_plugins',
 			function ( $transient ) use ( $container ) {
 
+				if ( empty( $transient ) || ! is_object( $transient ) ) {
+					return $transient;
+				}
+
 				/**
 				 * The plugin instance.
 				 *
