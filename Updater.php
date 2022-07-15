@@ -25,15 +25,33 @@ class Updater {
 				'vendor'            => $vendor, // abstract of GitHub org
 				'package'           => $package, // abstract of GitHub repo name
 				'plugin_basename'   => $plugin_basename, // bluehost-wordpress-plugin/bluehost-wordpress-plugin.php
-				'plugin'            => function ( Container $c ) {
+			)
+		);
+
+		$container->set(
+			'plugin',
+			$container->service(
+				function ( Container $c ) {
 					$path = WP_PLUGIN_DIR . '/' . $c['plugin_basename'];
 
 					return new Plugin( $path );
-				},
-				'cache_key'         => function ( Container $c ) {
+				}
+			)
+		);
+
+		$container->set(
+			'cache_key',
+			$container->service(
+				function ( Container $c ) {
 					return str_replace( '-', '_', $c['plugin']->slug() ) . '_github_api_latest_release';
-				},
-				'query_release_api' => function ( Container $c ) {
+				}
+			)
+		);
+
+		$container->set(
+			'query_release_api',
+			$container->service(
+				function ( Container $c ) {
 					$package_info = array(
 						'vendorName'     => $c['vendor'],
 						'packageName'    => $c['package'],
@@ -42,8 +60,14 @@ class Updater {
 					$query_string = '?' . http_build_query( $package_info, null, '&' );
 
 					return wp_remote_get( 'https://bluehost-wp-release.com/v1/' . $query_string );
-				},
-				'get_release_data'  => function ( Container $c ) {
+				}
+			)
+		);
+
+		$container->set(
+			'get_release_data',
+			$container->service(
+				function ( Container $c ) {
 					$payload = get_transient( $c['cache_key'] );
 					if ( ! $payload ) {
 						$payload  = new \stdClass();
@@ -62,7 +86,7 @@ class Updater {
 					}
 
 					return $payload;
-				},
+				}
 			)
 		);
 
