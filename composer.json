@@ -8,17 +8,14 @@
       "email": "micah@wpscholar.com"
     }
   ],
-  "repositories": [
-    {
+  "repositories": {
+    "newfold": {
       "type": "composer",
-      "url": "https://satis.wpteamhub.com"
+      "url": "https://newfold-labs.github.io/satis/",
+      "only": [
+        "newfold-labs/*"
+      ]
     }
-  ],
-  "require": {
-    "pimple/pimple": "^3.2"
-  },
-  "require-dev": {
-    "bluehost/wp-php-standards": "^1.1"
   },
   "autoload": {
     "psr-4": {
@@ -32,5 +29,16 @@
     "clean": [
       "vendor/bin/phpcbf . --standard=Bluehost"
     ]
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "require": {
+    "newfold-labs/container": "^1.2"
+  },
+  "require-dev": {
+    "bluehost/wp-php-standards": "^1.1"
   }
 }

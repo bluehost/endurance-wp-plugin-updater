@@ -2,7 +2,7 @@
 
 namespace Endurance_WP_Plugin_Updater;
 
-use Pimple\Container;
+use NewfoldLabs\Container\Container;
 
 /**
  * Class Updater
